@@ -72,14 +72,13 @@ func TestGetAccountAPI(t *testing.T) {
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					GetAccount(gomock.Any(), gomock.Any()).
-					Times(1).
-					Return(db.Accounts{}, sql.ErrConnDone)
+					Times(0).
+					Return(db.Accounts{}, sql.ErrNoRows)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
-		// TODO :add more cases
 	}
 
 	for i := range testCases {
