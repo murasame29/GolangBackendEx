@@ -12,7 +12,7 @@ type createAccountRequest struct {
 	// binding:"required" => 検証での必須条件
 	// oneof= => 許可する値
 	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,currency"`
+	Currency string `json:"currency" binding:"required,oneof=USD CAD EUR"`
 }
 
 func (server *Server) createAccount(ctx *gin.Context) {
