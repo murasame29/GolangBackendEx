@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"log"
 	"testing"
 	"time"
 
@@ -11,8 +12,9 @@ import (
 )
 
 func createRandomAccount(t *testing.T) Accounts {
+	user := createRandomUser(t)
 	arg := CreateAccountParams{
-		Owner:    util.RandomOwner(),
+		Owner:    user.Username,
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
@@ -83,11 +85,12 @@ func TestListAccount(t *testing.T) {
 
 	arg := ListAccountsParams{
 		Limit:  5,
-		Offset: 5,
+		Offset: 0,
 	}
 
 	Accounts, err := testQueries.ListAccounts(context.Background(), arg)
 	require.NoError(t, err)
+	log.Println(Accounts)
 	require.Len(t, Accounts, 5)
 	for _, account := range Accounts {
 		require.NotEmpty(t, account)
