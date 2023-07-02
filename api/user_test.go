@@ -184,7 +184,7 @@ func TestCreateUserAPI(t *testing.T) {
 			//スタブを作る
 			tc.buildStubs(store)
 			// サーバを立ててリクエストを送る
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			data, err := json.Marshal(tc.body)
@@ -202,7 +202,7 @@ func TestCreateUserAPI(t *testing.T) {
 	}
 
 }
-func randomUser(t require.TestingT) (db.Users, string) {
+func randomUser(t *testing.T) (db.Users, string) {
 	password := util.RandomString(8)
 	hashedPassword, err := util.HashPassword(password)
 	require.NoError(t, err)

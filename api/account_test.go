@@ -20,7 +20,8 @@ import (
 )
 
 func TestGetAccountAPI(t *testing.T) {
-	account := randomAccount()
+	user, _ := randomUser(t)
+	account := randomAccount(user.Username)
 
 	testCases := []struct {
 		name          string
@@ -94,7 +95,7 @@ func TestGetAccountAPI(t *testing.T) {
 			//スタブを作る
 			tc.buildStubs(store)
 			// サーバを立ててリクエストを送る
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/accounts/%d", tc.accountID)
@@ -109,10 +110,10 @@ func TestGetAccountAPI(t *testing.T) {
 	}
 
 }
-func randomAccount() db.Accounts {
+func randomAccount(owner string) db.Accounts {
 	return db.Accounts{
 		ID:       util.RandomInt(1, 1000),
-		Owner:    util.RandomOwner(),
+		Owner:    owner,
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
@@ -128,7 +129,8 @@ func requireBodyMatchAccount(t *testing.T, body *bytes.Buffer, account db.Accoun
 }
 
 func TestCreateAccountAPI(t *testing.T) {
-	account := randomAccount()
+	user, _ := randomUser(t)
+	account := randomAccount(user.Username)
 
 	testCases := []struct {
 		name          string
@@ -214,7 +216,7 @@ func TestCreateAccountAPI(t *testing.T) {
 			store := mockdb.NewMockStore(ctrl)
 			tc.buildStubs(store)
 
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			// Marshal body data to JSON
@@ -236,7 +238,8 @@ func TestListAccountAPI(t *testing.T) {
 	accounts := make([]db.Accounts, n)
 
 	for i := 0; i < n; i++ {
-		accounts[i] = randomAccount()
+		user, _ := randomUser(t)
+		accounts[i] = randomAccount(user.Username)
 	}
 
 	type Query struct {
@@ -328,7 +331,7 @@ func TestListAccountAPI(t *testing.T) {
 			store := mockdb.NewMockStore(ctrl)
 			tc.buildStubs(store)
 
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := "/accounts"
