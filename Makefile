@@ -30,6 +30,7 @@ test:
 
 server:
 	go run main.go
+	
 mock:
 	mockgen -destination db/mock/store.go github.com/murasame29/GolangBackendEx/db/sqlc Store
 
